@@ -51,6 +51,22 @@ public class ResourceObject
         return builder;
     }
 
+    public boolean isLocal()
+    {
+        if (subject instanceof IRI)
+            return builder.isLocalIRI((IRI) subject);
+        else
+            return false;
+    }
+    
+    public boolean isKnown()
+    {
+        if (subject instanceof IRI)
+            return builder.isKnownIRI((IRI) subject);
+        else
+            return false;
+    }
+    
     public String getID()
     {
         return "r-" + subject.toString().replaceAll("[^A-Za-z0-9]", "-");

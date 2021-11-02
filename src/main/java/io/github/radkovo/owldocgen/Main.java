@@ -39,7 +39,7 @@ public class Main
             System.out.println(builder.getOntologies());
 
             Writer w = new FileWriter("/tmp/out.html");
-            builder.getOntologies().get(1).renderAll(w);
+            builder.renderOntology(builder.getOntologies().get(1), w);
             w.close();
             
         } catch (RDFParseException e) {

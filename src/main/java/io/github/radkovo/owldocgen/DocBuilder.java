@@ -8,6 +8,7 @@ package io.github.radkovo.owldocgen;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Writer;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -54,6 +55,8 @@ public class DocBuilder
     private Map<String, String> prefixes; // url prefix -> name
     private Repository repo;
     private List<OntologyPresenter> ontologies;
+    
+    private String currentPrefix; //the prefix of the ontology currently being rendered
     
 
     public DocBuilder(String[] filenames) throws IOException, RDFParseException
@@ -193,4 +196,38 @@ public class DocBuilder
         }
     }
     
+    //=================================================================================================
+    
+    /**
+     * Does the iri belong to a namespace currently being rendered?
+     * @param iri
+     * @return
+     */
+    public boolean isLocalIRI(IRI iri)
+    {
+        return currentPrefix != null && currentPrefix.equals(iri.getNamespace());
+    }
+    
+    /**
+     * Does the iri belong to any rendered ontology namespace?
+     * @param iri
+     * @return
+     */
+    public boolean isKnownIRI(IRI iri)
+    {
+        for (OntologyPresenter op : ontologies)
+        {
+            if (op.getRes().getSubject().toString().equals(iri.getNamespace()))
+                return true;
+        }
+        return false;
+    }
+    
+    public void renderOntology(OntologyPresenter ontology, Writer w)
+    {
+        currentPrefix = ontology.getRes().getSubject().toString();
+        ontology.renderAll(w);
+        currentPrefix = null;
+    }
+
 }

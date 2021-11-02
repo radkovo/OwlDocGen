@@ -41,7 +41,12 @@ public class ResourcePresenter extends Presenter
     
     public String renderLink()
     {
-        return generateWith("resourceLink.mustache.html", this);
+        if (getRes().isLocal())
+            return generateWith("resourceLinkLocal.mustache.html", this);
+        else if (getRes().isKnown())
+            return generateWith("resourceLinkKnown.mustache.html", this);
+        else
+            return generateWith("resourceLinkOther.mustache.html", this);
     }
     
     public String renderDetail()
@@ -59,6 +64,16 @@ public class ResourcePresenter extends Presenter
     public String getLabel()
     {
         return res.getLabel();
+    }
+    
+    public String getIri()
+    {
+        return res.getIri();
+    }
+    
+    public String getShortIri()
+    {
+        return res.getShortIri();
     }
     
     public String getRdfTypes()
