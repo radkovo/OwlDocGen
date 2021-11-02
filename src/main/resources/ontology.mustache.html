@@ -3,6 +3,78 @@
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 	<title>{{res.title}}</title>
+	<style type="text/css">
+		html {
+			font-family: sans-serif;
+		}
+		body {
+			padding: 1em 2em;
+		}
+		h1, h2, h3 { 
+			color: #005A9C;
+			font-weight: normal;
+			text-align: left;
+		}
+		h1 { font-size: 170%; }
+		h2 { font-size: 140%; }
+		h3 { font-size: 120%  }
+		p { margin: 1em 0 }
+		dt { 
+			font-weight: bold;
+			margin-top: 5px; 
+		}
+		dd {
+			padding: 3px 0;
+		}
+		tt { color: darkred; }
+		.res {
+			position: relative;
+			display: inline-block;
+		}
+		.res::after {
+			font-size: smaller;
+			margin-left: 3px;
+			text-decoration: none !important;
+			position: absolute;
+			top: -0.5em;
+			right: -2em;
+			text-align: left;
+			width: 2em;
+		}
+		.res::after:hover {
+			background-color: lightblue;
+		}
+		.res.Class::after {
+			content: "c";
+			color: orange;
+		}
+		.subtoc, .entity {
+			border: 1px solid navy;
+			padding: 0.5em;
+			margin: 0.5em 0;
+		}
+		.subtoc {
+			background: #f4ffff;
+		}
+		.subtoc li, .entity .rel li {
+			display: inline;
+			margin-right: 0.75em;
+			padding: 3px 0;
+		}
+		.entity header {
+			border-bottom: 1px solid navy;
+			padding-bottom: 5px;
+		}
+		.entity h3 {
+			display: inline-block;
+			margin: 3px 1em 0 0;
+			padding: 0;
+		}
+		.entity .IRI {
+			display: inline-block;
+			margin: 0;
+		}
+	</style>
 </head>
 <body>
 
