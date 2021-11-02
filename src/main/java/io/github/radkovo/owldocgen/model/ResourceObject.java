@@ -3,7 +3,7 @@
  *
  * Created on 1. 11. 2021, 12:58:44 by burgetr
  */
-package io.github.radkovo.owldocgen;
+package io.github.radkovo.owldocgen.model;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,11 +15,12 @@ import org.eclipse.rdf4j.model.Statement;
 import org.eclipse.rdf4j.model.Value;
 import org.eclipse.rdf4j.model.vocabulary.DC;
 import org.eclipse.rdf4j.model.vocabulary.OWL;
-import org.eclipse.rdf4j.model.vocabulary.RDF;
 import org.eclipse.rdf4j.model.vocabulary.RDFS;
 import org.eclipse.rdf4j.query.QueryResults;
 import org.eclipse.rdf4j.repository.RepositoryConnection;
 import org.eclipse.rdf4j.repository.RepositoryResult;
+
+import io.github.radkovo.owldocgen.DocBuilder;
 
 /**
  * 
@@ -130,19 +131,15 @@ public class ResourceObject
         return model;
     }
     
-    public String getRdfTypes()
+    public List<Value> getPropertyValues(IRI predicate)
     {
-        String ret = "res";
+        List<Value> ret = new ArrayList<>();
         try (RepositoryConnection con = builder.getRepository().getConnection()) {
-            RepositoryResult<Statement> result = con.getStatements(subject, RDF.TYPE, null, true);
+            RepositoryResult<Statement> result = con.getStatements(subject, predicate, null, true);
             try {
                 while (result.hasNext())
                 {
-                    Value obj = result.next().getObject();
-                    if (obj instanceof IRI)
-                    {
-                        ret += " " + ((IRI) obj).getLocalName();
-                    }
+                    ret.add(result.next().getObject());
                 }
             }
             finally {

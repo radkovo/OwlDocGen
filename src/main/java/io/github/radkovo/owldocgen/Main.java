@@ -40,15 +40,8 @@ public class Main
             
             System.out.println(builder.getOntologies());
             
-            RootContainer root = new RootContainer();
-            root.setOntologies(builder.getOntologies());
-            
-            MustacheFactory mf = new DefaultMustacheFactory();
-            Mustache m = mf.compile("ontology.mustache.html");
-            
             //m.execute(new PrintWriter(System.out), root).flush();
-            m.execute(new PrintWriter(System.out), builder.getOntologies().get(1)).flush();
-            
+            builder.getOntologies().get(1).renderAll(new PrintWriter(System.out));
             
         } catch (RDFParseException e) {
             e.printStackTrace();

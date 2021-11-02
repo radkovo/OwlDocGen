@@ -1,3 +1,4 @@
+{{#res}}
 <header>
 	<h1>{{title}}</h1>
 </header>
@@ -23,33 +24,15 @@
 	<p>{{.}}</p>
 </section>
 {{/description}}
+{{/res}}
 
 {{#hasClasses}}
 <section id="classes">
 	<h2>Classes</h2>
-	<ul class="subtoc">
-		{{#classes}}
-		<li><a class="{{rdfTypes}}" href="#{{ID}}">{{label}}</a></li>
-		{{/classes}}
-	</ul>
+	{{{classLinks}}}
 
 	{{#classes}}
-	<div class="entity" id="{{ID}}">
-		<header>
-			<h3 class="{{rdfTypes}}">{{label}}</h3>
-			<p class="IRI"><tt title="{{iri}}">{{shortIri}}</tt></p>
-		</header>
-		<p class="comment">{{comment}}</p>
-		Super 
-		{{#superClasses}}
-		<li><a class="{{rdfTypes}}" href="#{{ID}}">{{label}}</a></li>
-		{{/superClasses}}
-		Sub
-		{{#subClasses}}
-		<li><a class="{{rdfTypes}}" href="#{{ID}}">{{label}}</a></li>
-		{{/subClasses}}
-
-	</div>
+		{{{renderDetail}}}
 	{{/classes}}
 
 </section>

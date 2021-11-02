@@ -1,0 +1,17 @@
+<div class="entity" id="{{ID}}">
+	{{#res}}
+	<header>
+		<h3 class="{{rdfTypes}}">{{label}}</h3>
+		<p class="IRI"><tt title="{{iri}}">{{shortIri}}</tt></p>
+	</header>
+	<p class="comment">{{comment}}</p>
+	{{/res}}
+	{{#superClasses}}
+		Super 
+		{{{.}}}
+	{{/superClasses}}
+	{{#subClasses}}
+		Sub 
+		{{{.}}}
+	{{/subClasses}}
+</div>

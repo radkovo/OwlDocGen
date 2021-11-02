@@ -33,6 +33,12 @@ import org.eclipse.rdf4j.sail.memory.MemoryStore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import io.github.radkovo.owldocgen.model.Ontology;
+import io.github.radkovo.owldocgen.model.ResourceObject;
+import io.github.radkovo.owldocgen.pres.ClassPresenter;
+import io.github.radkovo.owldocgen.pres.OntologyPresenter;
+import io.github.radkovo.owldocgen.pres.ResourcePresenter;
+
 /**
  * 
  * @author burgetr
@@ -44,7 +50,7 @@ public class DocBuilder
     private Map<String, String> namespaces; // name -> url prefix
     private Map<String, String> prefixes; // url prefix -> name
     private Repository repo;
-    private List<Ontology> ontologies;
+    private List<OntologyPresenter> ontologies;
     
 
     public DocBuilder(String[] filenames) throws IOException, RDFParseException
@@ -77,7 +83,7 @@ public class DocBuilder
         prefixes.put(prefix, name);
     }
     
-    public List<Ontology> getOntologies()
+    public List<OntologyPresenter> getOntologies()
     {
         if (ontologies == null)
             ontologies = findOntologies();
@@ -86,24 +92,25 @@ public class DocBuilder
 
     //=================================================================================================
     
-    protected List<Ontology> findOntologies()
+    protected List<OntologyPresenter> findOntologies()
     {
-        final List<Ontology> ret = new ArrayList<>();
+        final List<OntologyPresenter> ret = new ArrayList<>();
         try (RepositoryConnection con = repo.getConnection()) {
             Set<Resource> ress = QueryResults.asModel(con.getStatements(null, RDF.TYPE, OWL.ONTOLOGY, true)).subjects();
             for (Resource res : ress)
             {
                 Ontology o = new Ontology(this, res);
-                o.setClasses(findClassesForOntology(o));
-                ret.add(o);
+                OntologyPresenter op = new OntologyPresenter(o);
+                op.setClasses(findClassesForOntology(o));
+                ret.add(op);
             }
         }
         return ret;
     }
     
-    protected List<OWLClass> findClassesForOntology(Ontology o)
+    protected List<ResourcePresenter> findClassesForOntology(Ontology o)
     {
-        final List<OWLClass> ret = new ArrayList<>();
+        final List<ResourcePresenter> ret = new ArrayList<>();
         try (RepositoryConnection con = repo.getConnection()) {
             Set<Resource> ress = QueryResults.asModel(con.getStatements(null, RDF.TYPE, OWL.CLASS, true)).subjects();
             for (Resource res : ress)
@@ -112,7 +119,7 @@ public class DocBuilder
                 {
                     final IRI iri = (IRI) res;
                     if (o.getPrefix().equals(iri.getNamespace()))
-                        ret.add(new OWLClass(this, res));
+                        ret.add(new ClassPresenter(new ResourceObject(this, res)));
                 }
             }
         }

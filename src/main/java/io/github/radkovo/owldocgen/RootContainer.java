@@ -7,6 +7,8 @@ package io.github.radkovo.owldocgen;
 
 import java.util.List;
 
+import io.github.radkovo.owldocgen.model.Ontology;
+
 /**
  * 
  * @author burgetr
