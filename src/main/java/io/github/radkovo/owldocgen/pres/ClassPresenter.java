@@ -5,6 +5,8 @@
  */
 package io.github.radkovo.owldocgen.pres;
 
+import org.eclipse.rdf4j.model.vocabulary.OWL;
+
 import io.github.radkovo.owldocgen.model.ResourceObject;
 
 /**
@@ -27,22 +29,22 @@ public class ClassPresenter extends ResourcePresenter
     
     public String getSuperClasses()
     {
-        return renderList("rel super", getPresenters(getRes().getSuperClasses()), false);
+        return renderList("rel super", getPresenters(getRes().getSuperClasses(), OWL.CLASS), false);
     }
 
     public String getSubClasses()
     {
-        return renderList("rel sub", getPresenters(getRes().getSubClasses()), false);
+        return renderList("rel sub", getPresenters(getRes().getSubClasses(), OWL.CLASS), false);
     }
     
     public String getInDomain()
     {
-        return renderList("rel domain", getPresenters(getRes().getIsInDomain()), false);
+        return renderList("rel domain", getPresenters(getRes().getIsInDomain(), OWL.DATATYPEPROPERTY), false);
     }
 
     public String getInRange()
     {
-        return renderList("rel domain", getPresenters(getRes().getIsInRange()), false);
+        return renderList("rel domain", getPresenters(getRes().getIsInRange(), OWL.DATATYPEPROPERTY), false);
     }
 
 }

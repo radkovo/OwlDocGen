@@ -13,12 +13,15 @@ import org.eclipse.rdf4j.model.Model;
 import org.eclipse.rdf4j.model.Resource;
 import org.eclipse.rdf4j.model.Statement;
 import org.eclipse.rdf4j.model.Value;
+import org.eclipse.rdf4j.model.impl.LinkedHashModel;
+import org.eclipse.rdf4j.model.util.RDFCollections;
 import org.eclipse.rdf4j.model.vocabulary.DC;
 import org.eclipse.rdf4j.model.vocabulary.OWL;
 import org.eclipse.rdf4j.model.vocabulary.RDFS;
 import org.eclipse.rdf4j.query.QueryResults;
 import org.eclipse.rdf4j.repository.RepositoryConnection;
 import org.eclipse.rdf4j.repository.RepositoryResult;
+import org.eclipse.rdf4j.repository.util.Connections;
 
 import io.github.radkovo.owldocgen.DocBuilder;
 
@@ -41,6 +44,11 @@ public class ResourceObject
     public Resource getSubject()
     {
         return subject;
+    }
+
+    public DocBuilder getBuilder()
+    {
+        return builder;
     }
 
     public String getID()
@@ -233,6 +241,30 @@ public class ResourceObject
             return val.stringValue();
         else
             return null;
+    }
+    
+    public ResourceObject getObjectProperty(IRI predicate)
+    {
+        Value val = getPropertyValue(predicate);
+        if (val != null && val instanceof Resource)
+            return new ResourceObject(builder, (Resource) val);
+        else
+            return null;
+    }
+    
+    public List<ResourceObject> getListValues(Resource head)
+    {
+        List<ResourceObject> ret = new ArrayList<>();
+        try (RepositoryConnection con = builder.getRepository().getConnection()) {
+            Model rdflist = Connections.getRDFCollection(con, head, new LinkedHashModel());
+            List<Value> values = RDFCollections.asValues(rdflist, head, new ArrayList<>());
+            for (Value val : values)
+            {
+                if (val instanceof Resource)
+                    ret.add(new ResourceObject(builder, (Resource) val));
+            }
+        }
+        return ret;
     }
     
     public String toString()

@@ -12,6 +12,7 @@ import org.eclipse.rdf4j.model.IRI;
 import org.eclipse.rdf4j.model.Value;
 import org.eclipse.rdf4j.model.vocabulary.RDF;
 
+import io.github.radkovo.owldocgen.DocBuilder;
 import io.github.radkovo.owldocgen.model.ResourceObject;
 
 /**
@@ -31,6 +32,11 @@ public class ResourcePresenter extends Presenter
     public ResourceObject getRes()
     {
         return res;
+    }
+    
+    public DocBuilder getBuilder()
+    {
+        return res.getBuilder();
     }
     
     public String renderLink()
@@ -69,9 +75,9 @@ public class ResourcePresenter extends Presenter
         return ret;
     }
     
-    public List<ResourcePresenter> getPresenters(List<ResourceObject> resources)
+    public List<ResourcePresenter> getPresenters(List<ResourceObject> resources, IRI typeIRI)
     {
-        return resources.stream().map(r -> new ResourcePresenter(r)).collect(Collectors.toList());
+        return resources.stream().map(r -> getBuilder().createPresenter(r, typeIRI)).collect(Collectors.toList());
     }
 
     @Override

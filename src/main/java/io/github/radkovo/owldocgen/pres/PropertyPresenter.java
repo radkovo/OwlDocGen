@@ -5,6 +5,8 @@
  */
 package io.github.radkovo.owldocgen.pres;
 
+import org.eclipse.rdf4j.model.vocabulary.OWL;
+
 import io.github.radkovo.owldocgen.model.ResourceObject;
 
 /**
@@ -27,12 +29,12 @@ public class PropertyPresenter extends ResourcePresenter
 
     public String getHasDomain()
     {
-        return renderList("rel domain", getPresenters(getRes().getHasInDomain()), false);
+        return renderList("rel domain", getPresenters(getRes().getHasInDomain(), OWL.CLASS), false);
     }
 
     public String getHasRange()
     {
-        return renderList("rel domain", getPresenters(getRes().getHasInRange()), false);
+        return renderList("rel domain", getPresenters(getRes().getHasInRange(), OWL.CLASS), false);
     }
 
 }

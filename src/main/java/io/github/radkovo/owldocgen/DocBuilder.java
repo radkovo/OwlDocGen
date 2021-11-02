@@ -8,7 +8,6 @@ package io.github.radkovo.owldocgen;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -38,6 +37,7 @@ import io.github.radkovo.owldocgen.model.Ontology;
 import io.github.radkovo.owldocgen.model.ResourceObject;
 import io.github.radkovo.owldocgen.pres.ClassPresenter;
 import io.github.radkovo.owldocgen.pres.DatatypePropertyPresenter;
+import io.github.radkovo.owldocgen.pres.ExprCollectionPresenter;
 import io.github.radkovo.owldocgen.pres.ObjectPropertyPresenter;
 import io.github.radkovo.owldocgen.pres.OntologyPresenter;
 import io.github.radkovo.owldocgen.pres.ResourcePresenter;
@@ -104,16 +104,16 @@ public class DocBuilder
             {
                 Ontology o = new Ontology(this, res);
                 OntologyPresenter op = new OntologyPresenter(o);
-                op.setClasses(findResourcesForOntology(o, OWL.CLASS, ClassPresenter.class));
-                op.setDatatypeProperties(findResourcesForOntology(o, OWL.DATATYPEPROPERTY, DatatypePropertyPresenter.class));
-                op.setObjectProperties(findResourcesForOntology(o, OWL.OBJECTPROPERTY, ObjectPropertyPresenter.class));
+                op.setClasses(findResourcesForOntology(o, OWL.CLASS));
+                op.setDatatypeProperties(findResourcesForOntology(o, OWL.DATATYPEPROPERTY));
+                op.setObjectProperties(findResourcesForOntology(o, OWL.OBJECTPROPERTY));
                 ret.add(op);
             }
         }
         return ret;
     }
     
-    protected List<ResourcePresenter> findResourcesForOntology(Ontology o, IRI typeIRI, Class<? extends ResourcePresenter> clazz)
+    protected List<ResourcePresenter> findResourcesForOntology(Ontology o, IRI typeIRI)
     {
         final List<ResourcePresenter> ret = new ArrayList<>();
         try (RepositoryConnection con = repo.getConnection()) {
@@ -124,21 +124,39 @@ public class DocBuilder
                 {
                     final IRI iri = (IRI) res;
                     if (o.getPrefix().equals(iri.getNamespace()))
-                        ret.add(createPresenter(new ResourceObject(this, res), clazz));
+                        ret.add(createPresenter(new ResourceObject(this, res), typeIRI));
                 }
             }
         }
         return ret;
     }
     
-    protected ResourcePresenter createPresenter(ResourceObject res, Class<? extends ResourcePresenter> clazz)
+    public ResourcePresenter createPresenter(ResourceObject res, IRI typeIRI)
     {
-        try {
-            return clazz.getConstructor(ResourceObject.class).newInstance(res);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }    
+        if (OWL.CLASS.equals(typeIRI))
+        {
+            //TODO more predicates should be added
+            /*System.out.println(res.getSubject());
+            if (!(res.getSubject() instanceof IRI))
+                System.out.println(res.getModel());*/
+            ResourceObject obj;
+            if ((obj = res.getObjectProperty(OWL.UNIONOF)) != null)
+                return new ExprCollectionPresenter(res, "or", obj);
+            else
+                return new ClassPresenter(res);
+        }
+        else if (OWL.DATATYPEPROPERTY.equals(typeIRI))
+        {
+            return new DatatypePropertyPresenter(res);
+        }
+        else if (OWL.OBJECTPROPERTY.equals(typeIRI))
+        {
+            return new ObjectPropertyPresenter(res);
+        }
+        else
+        {
+            return new ResourcePresenter(res);
+        }
     }
     
     //=================================================================================================
