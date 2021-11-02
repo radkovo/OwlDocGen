@@ -27,13 +27,16 @@ public class Main
     public static void main(String[] args)
     {
         
-        final String path = System.getProperty("user.home") + "/git/FitLayout.github.io/ontology/";
+        final String path = System.getProperty("user.home") + "/git/fitlayout/FitLayout.github.io/ontology/";
         String[] filenames = new String[] { path + "fitlayout.owl", path + "render.owl", path + "segmentation.owl" };
         
         
         try
         {
             DocBuilder builder = new DocBuilder(filenames);
+            builder.addPrefix("fl", "http://fitlayout.github.io/ontology/fitlayout.owl#");
+            builder.addPrefix("box", "http://fitlayout.github.io/ontology/render.owl#");
+            builder.addPrefix("segm", "http://fitlayout.github.io/ontology/segmentation.owl#");
             
             System.out.println(builder.getOntologies());
             
@@ -43,7 +46,8 @@ public class Main
             MustacheFactory mf = new DefaultMustacheFactory();
             Mustache m = mf.compile("ontology.mustache.html");
             
-            m.execute(new PrintWriter(System.out), root).flush();
+            //m.execute(new PrintWriter(System.out), root).flush();
+            m.execute(new PrintWriter(System.out), builder.getOntologies().get(1)).flush();
             
             
         } catch (RDFParseException e) {

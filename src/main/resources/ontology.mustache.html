@@ -1,3 +1,56 @@
-{{#ontologies}}
-<h1 title="{{subject}}">{{title}}</h1>
-{{/ontologies}}
+<header>
+	<h1>{{title}}</h1>
+</header>
+
+<section class="metadata">
+	<dl>
+		<dt>IRI</dt>
+		<dd class="uri">{{prefix}}</dd>
+		{{#version}}
+		<dt>Version</dt>
+		<dd>{{.}}</dd>
+		{{/version}}
+		{{#creator}}
+		<dt>Creator(s)</dt>
+		<dd>{{.}}</dd>
+		{{/creator}}
+	</dl>
+</section>
+
+{{#description}}
+<section id="description">
+	<h2>Description</h2>
+	<p>{{.}}</p>
+</section>
+{{/description}}
+
+{{#hasClasses}}
+<section id="classes">
+	<h2>Classes</h2>
+	<ul class="subtoc">
+		{{#classes}}
+		<li><a class="{{rdfTypes}}" href="#{{ID}}">{{label}}</a></li>
+		{{/classes}}
+	</ul>
+
+	{{#classes}}
+	<div class="entity" id="{{ID}}">
+		<header>
+			<h3 class="{{rdfTypes}}">{{label}}</h3>
+			<p class="IRI"><tt title="{{iri}}">{{shortIri}}</tt></p>
+		</header>
+		<p class="comment">{{comment}}</p>
+		Super 
+		{{#superClasses}}
+		<li><a class="{{rdfTypes}}" href="#{{ID}}">{{label}}</a></li>
+		{{/superClasses}}
+		Sub
+		{{#subClasses}}
+		<li><a class="{{rdfTypes}}" href="#{{ID}}">{{label}}</a></li>
+		{{/subClasses}}
+
+	</div>
+	{{/classes}}
+
+</section>
+{{/hasClasses}}

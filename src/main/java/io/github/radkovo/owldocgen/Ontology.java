@@ -5,9 +5,12 @@
  */
 package io.github.radkovo.owldocgen;
 
+import java.util.List;
+
 import org.eclipse.rdf4j.model.Resource;
 import org.eclipse.rdf4j.model.vocabulary.DC;
-import org.eclipse.rdf4j.repository.Repository;
+import org.eclipse.rdf4j.model.vocabulary.OWL;
+import org.eclipse.rdf4j.model.vocabulary.RDFS;
 
 /**
  * 
@@ -15,16 +18,32 @@ import org.eclipse.rdf4j.repository.Repository;
  */
 public class Ontology extends ResourceObject
 {
+    private List<OWLClass> classes;
+    
 
-    public Ontology(Repository repo, Resource subject)
+    public Ontology(DocBuilder builder, Resource subject)
     {
-        super(repo, subject);
+        super(builder, subject);
     }
     
-    public String getTitle()
+    public String getPrefix()
     {
-        return getStringProperty(DC.TITLE);
+        return getSubject().toString();
     }
     
+    public List<OWLClass> getClasses()
+    {
+        return classes;
+    }
+    
+    public boolean hasClasses()
+    {
+        return (classes != null && !classes.isEmpty());
+    }
+
+    public void setClasses(List<OWLClass> classes)
+    {
+        this.classes = classes;
+    }
 
 }
