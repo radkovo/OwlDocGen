@@ -5,14 +5,12 @@
  */
 package io.github.radkovo.owldocgen;
 
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.Writer;
 
 import org.eclipse.rdf4j.rio.RDFParseException;
-
-import com.github.mustachejava.DefaultMustacheFactory;
-import com.github.mustachejava.Mustache;
-import com.github.mustachejava.MustacheFactory;
 
 /**
  * 
@@ -39,9 +37,10 @@ public class Main
             builder.addPrefix("segm", "http://fitlayout.github.io/ontology/segmentation.owl#");
             
             System.out.println(builder.getOntologies());
-            
-            //m.execute(new PrintWriter(System.out), root).flush();
-            builder.getOntologies().get(1).renderAll(new PrintWriter(System.out));
+
+            Writer w = new FileWriter("/tmp/out.html");
+            builder.getOntologies().get(1).renderAll(w);
+            w.close();
             
         } catch (RDFParseException e) {
             e.printStackTrace();

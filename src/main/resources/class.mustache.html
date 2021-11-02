@@ -6,12 +6,14 @@
 	</header>
 	<p class="comment">{{comment}}</p>
 	{{/res}}
+	<dl>
 	{{#superClasses}}
-		Super 
-		{{{.}}}
+		<dt>Super-classes</dt> 
+		<dd>{{{.}}}</dd>
 	{{/superClasses}}
 	{{#subClasses}}
-		Sub 
-		{{{.}}}
+		<dt>Subclasses</dt> 
+		<dd>{{{.}}}</dd>
 	{{/subClasses}}
+	</dl>
 </div>
