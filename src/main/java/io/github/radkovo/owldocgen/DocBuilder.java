@@ -63,6 +63,7 @@ public class DocBuilder
     {
         namespaces = new HashMap<>();
         prefixes = new HashMap<>();
+        initDefaultPrefixes();
         repo = new SailRepository(new MemoryStore());
         for (String filename : filenames)
             loadFile(filename);
@@ -228,6 +229,14 @@ public class DocBuilder
         currentPrefix = ontology.getRes().getSubject().toString();
         ontology.renderAll(w);
         currentPrefix = null;
+    }
+    
+    protected void initDefaultPrefixes()
+    {
+        addPrefix("rdf", "http://www.w3.org/1999/02/22-rdf-syntax-ns#");
+        addPrefix("rdfs", "http://www.w3.org/2000/01/rdf-schema#");
+        addPrefix("xsd", "http://www.w3.org/2001/XMLSchema#");
+        addPrefix("owl", "http://www.w3.org/2002/07/owl#");        
     }
 
 }
