@@ -34,5 +34,15 @@ public class ClassPresenter extends ResourcePresenter
     {
         return renderList("rel sub", getPresenters(getRes().getSubClasses()), false);
     }
+    
+    public String getInDomain()
+    {
+        return renderList("rel domain", getPresenters(getRes().getIsInDomain()), false);
+    }
+
+    public String getInRange()
+    {
+        return renderList("rel domain", getPresenters(getRes().getIsInRange()), false);
+    }
 
 }

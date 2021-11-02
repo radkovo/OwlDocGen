@@ -55,7 +55,7 @@ public class ResourcePresenter extends Presenter
         return res.getLabel();
     }
     
-    public String getTypes()
+    public String getRdfTypes()
     {
         String ret = "res";
         List<Value> types = res.getPropertyValues(RDF.TYPE);

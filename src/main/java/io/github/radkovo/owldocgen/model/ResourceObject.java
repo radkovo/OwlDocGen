@@ -118,6 +118,26 @@ public class ResourceObject
         return getRelatedSubjects(RDFS.SUBCLASSOF);
     }
     
+    public List<ResourceObject> getIsInDomain()
+    {
+        return getRelatedSubjects(RDFS.DOMAIN);
+    }
+    
+    public List<ResourceObject> getHasInDomain()
+    {
+        return getRelatedObjects(RDFS.DOMAIN);
+    }
+    
+    public List<ResourceObject> getIsInRange()
+    {
+        return getRelatedSubjects(RDFS.RANGE);
+    }
+    
+    public List<ResourceObject> getHasInRange()
+    {
+        return getRelatedObjects(RDFS.RANGE);
+    }
+    
     //==============================================================================================
     
     public Model getModel()

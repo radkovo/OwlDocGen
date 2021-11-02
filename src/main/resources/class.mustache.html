@@ -8,12 +8,21 @@
 	{{/res}}
 	<dl>
 	{{#superClasses}}
-		<dt>Super-classes</dt> 
+		<dt>has super-classes</dt> 
 		<dd>{{{.}}}</dd>
 	{{/superClasses}}
 	{{#subClasses}}
-		<dt>Subclasses</dt> 
+		<dt>has subclasses</dt> 
 		<dd>{{{.}}}</dd>
 	{{/subClasses}}
+	{{#inDomain}}
+		<dt>is in domain</dt> 
+		<dd>{{{.}}}</dd>
+	{{/inDomain}}
+	{{#inRange}}
+		<dt>is in range</dt> 
+		<dd>{{{.}}}</dd>
+	{{/inRange}}
+	
 	</dl>
 </div>
