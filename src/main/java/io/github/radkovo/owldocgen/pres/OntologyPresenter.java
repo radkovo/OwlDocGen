@@ -17,6 +17,8 @@ import io.github.radkovo.owldocgen.model.ResourceObject;
 public class OntologyPresenter extends ResourcePresenter
 {
     private List<ResourcePresenter> classes;
+    private List<ResourcePresenter> objectProperties;
+    private List<ResourcePresenter> datatypeProperties;
 
     public OntologyPresenter(ResourceObject res)
     {
@@ -41,6 +43,46 @@ public class OntologyPresenter extends ResourcePresenter
     public String getClassLinks()
     {
         return renderList("subtoc", classes, false);
+    }
+
+    public boolean hasObjectProperties()
+    {
+        return objectProperties != null && !objectProperties.isEmpty();
+    }
+
+    public List<ResourcePresenter> getObjectProperties()
+    {
+        return objectProperties;
+    }
+
+    public void setObjectProperties(List<ResourcePresenter> objectProperties)
+    {
+        this.objectProperties = objectProperties;
+    }
+
+    public String getObjectPropertyLinks()
+    {
+        return renderList("subtoc", objectProperties, false);
+    }
+
+    public boolean hasDatatypeProperties()
+    {
+        return datatypeProperties != null && !datatypeProperties.isEmpty();
+    }
+
+    public List<ResourcePresenter> getDatatypeProperties()
+    {
+        return datatypeProperties;
+    }
+
+    public void setDatatypeProperties(List<ResourcePresenter> datatypeProperties)
+    {
+        this.datatypeProperties = datatypeProperties;
+    }
+
+    public String getDatatypePropertyLinks()
+    {
+        return renderList("subtoc", datatypeProperties, false);
     }
 
     public void renderAll(Writer w)

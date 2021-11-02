@@ -8,6 +8,7 @@ package io.github.radkovo.owldocgen;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -36,6 +37,8 @@ import org.slf4j.LoggerFactory;
 import io.github.radkovo.owldocgen.model.Ontology;
 import io.github.radkovo.owldocgen.model.ResourceObject;
 import io.github.radkovo.owldocgen.pres.ClassPresenter;
+import io.github.radkovo.owldocgen.pres.DatatypePropertyPresenter;
+import io.github.radkovo.owldocgen.pres.ObjectPropertyPresenter;
 import io.github.radkovo.owldocgen.pres.OntologyPresenter;
 import io.github.radkovo.owldocgen.pres.ResourcePresenter;
 
@@ -101,29 +104,41 @@ public class DocBuilder
             {
                 Ontology o = new Ontology(this, res);
                 OntologyPresenter op = new OntologyPresenter(o);
-                op.setClasses(findClassesForOntology(o));
+                op.setClasses(findResourcesForOntology(o, OWL.CLASS, ClassPresenter.class));
+                op.setDatatypeProperties(findResourcesForOntology(o, OWL.DATATYPEPROPERTY, DatatypePropertyPresenter.class));
+                op.setObjectProperties(findResourcesForOntology(o, OWL.OBJECTPROPERTY, ObjectPropertyPresenter.class));
                 ret.add(op);
             }
         }
         return ret;
     }
     
-    protected List<ResourcePresenter> findClassesForOntology(Ontology o)
+    protected List<ResourcePresenter> findResourcesForOntology(Ontology o, IRI typeIRI, Class<? extends ResourcePresenter> clazz)
     {
         final List<ResourcePresenter> ret = new ArrayList<>();
         try (RepositoryConnection con = repo.getConnection()) {
-            Set<Resource> ress = QueryResults.asModel(con.getStatements(null, RDF.TYPE, OWL.CLASS, true)).subjects();
+            Set<Resource> ress = QueryResults.asModel(con.getStatements(null, RDF.TYPE, typeIRI, true)).subjects();
             for (Resource res : ress)
             {
                 if (res instanceof IRI)
                 {
                     final IRI iri = (IRI) res;
                     if (o.getPrefix().equals(iri.getNamespace()))
-                        ret.add(new ClassPresenter(new ResourceObject(this, res)));
+                        ret.add(createPresenter(new ResourceObject(this, res), clazz));
                 }
             }
         }
         return ret;
+    }
+    
+    protected ResourcePresenter createPresenter(ResourceObject res, Class<? extends ResourcePresenter> clazz)
+    {
+        try {
+            return clazz.getConstructor(ResourceObject.class).newInstance(res);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }    
     }
     
     //=================================================================================================

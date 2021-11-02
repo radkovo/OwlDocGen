@@ -1,0 +1,20 @@
+<div class="entity" id="{{ID}}">
+	{{#res}}
+	<header>
+		<h3 class="{{rdfTypes}}">{{label}}</h3>
+		<p class="IRI"><tt title="{{iri}}">{{shortIri}}</tt></p>
+	</header>
+	<p class="comment">{{comment}}</p>
+	{{/res}}
+	<dl>
+	{{#hasDomain}}
+		<dt>has domain</dt> 
+		<dd>{{{.}}}</dd>
+	{{/hasDomain}}
+	{{#hasRange}}
+		<dt>has range</dt> 
+		<dd>{{{.}}}</dd>
+	{{/hasRange}}
+	
+	</dl>
+</div>
