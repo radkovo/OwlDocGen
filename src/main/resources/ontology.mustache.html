@@ -144,6 +144,21 @@
 {{/description}}
 {{/res}}
 
+<section id="toc">
+	<h2>Table of Contents</h2>
+	<ol>
+		{{#hasClasses}}
+		<li><a href="#classes">Classes</a></li>
+		{{/hasClasses}}
+		{{#hasObjectProperties}}
+		<li><a href="#object-properties">Object properties</a></li>
+		{{/hasObjectProperties}}
+		{{#hasDatatypeProperties}}
+		<li><a href="#datatype-properties">Datatype properties</a></li>
+		{{/hasDatatypeProperties}}
+	</ol>
+</section>
+
 {{#hasClasses}}
 <section id="classes">
 	<h2>Classes</h2>
