@@ -6,7 +6,9 @@
 package io.github.radkovo.owldocgen.model;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.eclipse.rdf4j.model.IRI;
 import org.eclipse.rdf4j.model.Model;
@@ -140,6 +142,14 @@ public class ResourceObject
     public List<ResourceObject> getSubClasses()
     {
         return getRelatedSubjects(RDFS.SUBCLASSOF);
+    }
+    
+    public List<ResourceObject> getEquivalentClasses()
+    {
+        Set<ResourceObject> all = new HashSet<>();
+        all.addAll(getRelatedSubjects(OWL.EQUIVALENTCLASS));
+        all.addAll(getRelatedObjects(OWL.EQUIVALENTCLASS));
+        return new ArrayList<>(all);
     }
     
     public List<ResourceObject> getIsInDomain()
@@ -291,6 +301,21 @@ public class ResourceObject
         if (label != null)
             s.append("(").append(label).append(")");
         return s.toString();
+    }
+
+    @Override
+    public int hashCode()
+    {
+        return subject.toString().hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj)
+    {
+        if (this == obj) return true;
+        if (obj == null) return false;
+        if (getClass() != obj.getClass()) return false;
+        return this.toString().equals(obj.toString());
     }
     
 }

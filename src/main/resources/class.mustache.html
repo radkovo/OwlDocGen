@@ -7,6 +7,10 @@
 	<p class="comment">{{comment}}</p>
 	{{/res}}
 	<dl>
+	{{#equivalentClasses}}
+		<dt>equivalent classes</dt> 
+		<dd>{{{.}}}</dd>
+	{{/equivalentClasses}}
 	{{#superClasses}}
 		<dt>has super-classes</dt> 
 		<dd>{{{.}}}</dd>

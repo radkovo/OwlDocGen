@@ -37,6 +37,11 @@ public class ClassPresenter extends ResourcePresenter
         return renderList("rel sub", getPresenters(getRes().getSubClasses(), OWL.CLASS), false);
     }
     
+    public String getEquivalentClasses()
+    {
+        return renderList("rel eq", getPresenters(getRes().getEquivalentClasses(), OWL.CLASS), false);
+    }
+    
     public String getInDomain()
     {
         return renderList("rel domain", getPresenters(getRes().getIsInDomain(), OWL.DATATYPEPROPERTY), false);
