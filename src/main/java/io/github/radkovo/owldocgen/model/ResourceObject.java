@@ -72,7 +72,17 @@ public class ResourceObject
     
     public String getID()
     {
-        return "r-" + subject.toString().replaceAll("[^A-Za-z0-9]", "-");
+        final String longId = "r-" + subject.toString().replaceAll("[^A-Za-z0-9]", "-"); 
+        if (subject instanceof IRI)
+        {
+            IRI iri = (IRI) subject;
+            if (!iri.getLocalName().isEmpty())
+                return iri.getLocalName();
+            else
+                return longId;
+        }
+        else
+            return longId;
     }
     
     public String getIri()
