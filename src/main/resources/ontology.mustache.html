@@ -39,7 +39,7 @@
 		.res {
 			position: relative;
 			display: inline-block;
-			margin-right: 0.3em;
+			margin-right: 0;
 		}
 		.res::after {
 			font-size: smaller;
@@ -53,6 +53,12 @@
 		}
 		.res::after:hover {
 			background-color: lightblue;
+		}
+		.res.Class {
+			margin-right: 0.5em;
+		}
+		.res.ObjectProperty, .res.DatatypeProperty {
+			margin-right: 1em;
 		}
 		.res.Class::after {
 			content: "c";
@@ -77,9 +83,14 @@
 		.subtoc {
 			background: #f4ffff;
 		}
-		.subtoc li, .entity .rel li {
+		.subtoc li {
 			display: inline;
 			margin-right: 0.75em;
+			padding: 3px 0;
+		}
+		.entity .rel li {
+			display: inline;
+			margin-right: 0.3em;
 			padding: 3px 0;
 		}
 		.entity header {

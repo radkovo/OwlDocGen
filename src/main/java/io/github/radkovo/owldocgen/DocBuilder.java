@@ -41,6 +41,8 @@ import io.github.radkovo.owldocgen.model.ResourceObject;
 import io.github.radkovo.owldocgen.pres.ClassPresenter;
 import io.github.radkovo.owldocgen.pres.DatatypePropertyPresenter;
 import io.github.radkovo.owldocgen.pres.ExprCollectionPresenter;
+import io.github.radkovo.owldocgen.pres.ExprRestrictionPresenter;
+import io.github.radkovo.owldocgen.pres.ExprUnaryPresenter;
 import io.github.radkovo.owldocgen.pres.ObjectPropertyPresenter;
 import io.github.radkovo.owldocgen.pres.OntologyPresenter;
 import io.github.radkovo.owldocgen.pres.ResourcePresenter;
@@ -188,13 +190,37 @@ public class DocBuilder
     {
         if (OWL.CLASS.equals(typeIRI))
         {
-            //TODO more predicates should be added
             /*System.out.println(res.getSubject());
             if (!(res.getSubject() instanceof IRI))
                 System.out.println(res.getModel());*/
             ResourceObject obj;
             if ((obj = res.getObjectProperty(OWL.UNIONOF)) != null)
                 return new ExprCollectionPresenter(res, "or", obj);
+            else if ((obj = res.getObjectProperty(OWL.INTERSECTIONOF)) != null)
+                return new ExprCollectionPresenter(res, "and", obj);
+            else if ((obj = res.getObjectProperty(OWL.COMPLEMENTOF)) != null)
+                return new ExprUnaryPresenter(res, "not", obj);
+            else if (OWL.RESTRICTION.equals(res.getType()))
+            {
+                // restriction subject
+                ResourceObject restrictionSubj = res.getObjectProperty(OWL.ONPROPERTY);
+                if (restrictionSubj == null) restrictionSubj = res.getObjectProperty(OWL.ONCLASS);
+                // restriction type
+                ResourceObject robj;
+                String value;
+                if ((robj = res.getObjectProperty(OWL.SOMEVALUESFROM)) != null)
+                    return new ExprRestrictionPresenter(res, restrictionSubj, "some", robj, null);
+                else if ((robj = res.getObjectProperty(OWL.ALLVALUESFROM)) != null)
+                    return new ExprRestrictionPresenter(res, restrictionSubj, "only", robj, null);
+                else if ((value = res.getStringProperty(OWL.CARDINALITY)) != null)
+                    return new ExprRestrictionPresenter(res, restrictionSubj, "exactly", null, value);
+                else if ((value = res.getStringProperty(OWL.MINCARDINALITY)) != null)
+                    return new ExprRestrictionPresenter(res, restrictionSubj, "min", null, value);
+                else if ((value = res.getStringProperty(OWL.MAXCARDINALITY)) != null)
+                    return new ExprRestrictionPresenter(res, restrictionSubj, "max", null, value);
+                else
+                    return new ClassPresenter(res);
+            }
             else
                 return new ClassPresenter(res);
         }

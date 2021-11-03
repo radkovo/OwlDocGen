@@ -19,6 +19,7 @@ import org.eclipse.rdf4j.model.impl.LinkedHashModel;
 import org.eclipse.rdf4j.model.util.RDFCollections;
 import org.eclipse.rdf4j.model.vocabulary.DC;
 import org.eclipse.rdf4j.model.vocabulary.OWL;
+import org.eclipse.rdf4j.model.vocabulary.RDF;
 import org.eclipse.rdf4j.model.vocabulary.RDFS;
 import org.eclipse.rdf4j.query.QueryResults;
 import org.eclipse.rdf4j.repository.RepositoryConnection;
@@ -85,11 +86,6 @@ public class ResourceObject
             return builder.getShortIri((IRI) subject);
         else
             return getIri();
-    }
-    
-    public String getType()
-    {
-        return "resource";
     }
     
     public String getLabel()
@@ -265,6 +261,15 @@ public class ResourceObject
         Value val = getPropertyValue(predicate);
         if (val != null)
             return val.stringValue();
+        else
+            return null;
+    }
+    
+    public Resource getType()
+    {
+        Value val = getPropertyValue(RDF.TYPE);
+        if (val instanceof Resource)
+            return (Resource) val;
         else
             return null;
     }
