@@ -95,6 +95,11 @@ public class ResourcePresenter extends Presenter
         return ret;
     }
     
+    public String getFileName()
+    {
+        return getBuilder().getResourceFileName(getRes().getSubject());
+    }
+    
     public List<ResourcePresenter> getPresenters(List<ResourceObject> resources, IRI typeIRI)
     {
         return resources.stream().map(r -> getBuilder().createPresenter(r, typeIRI)).collect(Collectors.toList());

@@ -218,6 +218,14 @@ public class DocBuilder
         return files.get(prefix);
     }
     
+    public String getResourceFileName(Resource resource)
+    {
+        if (resource instanceof IRI)
+            return files.get(((IRI) resource).getNamespace());
+        else
+            return null;
+    }
+    
     private String assignFilename(Ontology o)
     {
         String name = guessFilename(o);

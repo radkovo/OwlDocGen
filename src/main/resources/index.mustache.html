@@ -10,6 +10,11 @@
 		body {
 			padding: 1em 2em;
 		}
+		:link { color: #00c; }
+		:visited { color: #00c; }
+		a:active { color: #c00; }
+		a.known { color: #07c; }
+		a.known:visited { color: #07c; }
 		h1, h2, h3 { 
 			color: #005A9C;
 			font-weight: normal;
@@ -47,7 +52,7 @@
 <ol>
 {{#ontologyInfo}}
 <li>
-		<a href="#">{{o.title}}</a> <code>{{o.prefix}}</code><br>
+		<a href="{{filename}}">{{o.title}}</a> <code>{{o.prefix}}</code><br>
 		<code>{{o.iri}}</code>
 </li>
 {{/ontologyInfo}}
