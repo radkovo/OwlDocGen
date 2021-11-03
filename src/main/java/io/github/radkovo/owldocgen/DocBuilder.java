@@ -5,7 +5,9 @@
  */
 package io.github.radkovo.owldocgen;
 
+import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Writer;
@@ -42,6 +44,7 @@ import io.github.radkovo.owldocgen.pres.ExprCollectionPresenter;
 import io.github.radkovo.owldocgen.pres.ObjectPropertyPresenter;
 import io.github.radkovo.owldocgen.pres.OntologyPresenter;
 import io.github.radkovo.owldocgen.pres.ResourcePresenter;
+import io.github.radkovo.owldocgen.pres.RootPresenter;
 
 /**
  * 
@@ -50,9 +53,13 @@ import io.github.radkovo.owldocgen.pres.ResourcePresenter;
 public class DocBuilder
 {
     private static final Logger log = LoggerFactory.getLogger(DocBuilder.class);
+
+    public final String filenameSuffix = ".html";
     
+    private String mainTitle = "Ontologies";
     private Map<String, String> namespaces; // name -> url prefix
     private Map<String, String> prefixes; // url prefix -> name
+    private Map<String, String> files; // namespace url -> filename
     private Repository repo;
     private List<OntologyPresenter> ontologies;
     
@@ -61,12 +68,23 @@ public class DocBuilder
 
     public DocBuilder(String[] filenames) throws IOException, RDFParseException
     {
+        files = new HashMap<>();
         namespaces = new HashMap<>();
         prefixes = new HashMap<>();
         initDefaultPrefixes();
         repo = new SailRepository(new MemoryStore());
         for (String filename : filenames)
             loadFile(filename);
+    }
+
+    public String getMainTitle()
+    {
+        return mainTitle;
+    }
+
+    public void setMainTitle(String mainTitle)
+    {
+        this.mainTitle = mainTitle;
     }
 
     public Repository getRepository()
@@ -97,6 +115,36 @@ public class DocBuilder
         return ontologies;
     }
 
+    public void renderOntology(OntologyPresenter ontology, Writer w)
+    {
+        currentPrefix = ontology.getRes().getSubject().toString();
+        ontology.renderAll(w);
+        currentPrefix = null;
+    }
+    
+    public void renderIndex(File destDir) throws IOException
+    {
+        RootPresenter root = new RootPresenter(this, getOntologies());
+        File dest = new File(destDir, "index" + filenameSuffix);
+        try (Writer w = new FileWriter(dest)) {
+            root.renderAll(w);
+        }
+        log.info("Rendered: {}", dest);
+    }
+    
+    public void renderAll(File destDir) throws IOException
+    {
+        for (OntologyPresenter op : getOntologies())
+        {
+            String filename = getOntologyFileName(op);
+            File dest = new File(destDir, filename);
+            try (Writer w = new FileWriter(dest)) {
+                renderOntology(op, w);
+            }
+            log.info("Rendered: {}", dest);
+        }
+    }
+    
     //=================================================================================================
     
     protected List<OntologyPresenter> findOntologies()
@@ -107,6 +155,7 @@ public class DocBuilder
             for (Resource res : ress)
             {
                 Ontology o = new Ontology(this, res);
+                assignFilename(o);
                 OntologyPresenter op = new OntologyPresenter(o);
                 op.setClasses(findResourcesForOntology(o, OWL.CLASS));
                 op.setDatatypeProperties(findResourcesForOntology(o, OWL.DATATYPEPROPERTY));
@@ -161,6 +210,47 @@ public class DocBuilder
         {
             return new ResourcePresenter(res);
         }
+    }
+    
+    public String getOntologyFileName(OntologyPresenter op)
+    {
+        final String prefix = ((Ontology) op.getRes()).getPrefix();
+        return files.get(prefix);
+    }
+    
+    private String assignFilename(Ontology o)
+    {
+        String name = guessFilename(o);
+        // solve duplicates
+        int i = 1;
+        String cand = name;
+        while (files.containsValue(cand))
+            cand = cand + (i++);
+        // add suffix
+        cand += filenameSuffix;
+        // store
+        files.put(o.getPrefix(), cand);
+        return cand;
+    }
+    
+    private String guessFilename(Ontology o)
+    {
+        // start with the prefix uri
+        String name = o.getPrefix();
+        // find the last path component
+        int i = name.lastIndexOf('/');
+        if (i != -1 && i + 1 < name.length())
+            name = name.substring(i + 1);
+        // remove possible extensions
+        i = name.lastIndexOf('.');
+        if (i > 0)
+            name = name.substring(0, i);
+        // remove other symbols
+        name = name.replaceAll("[^A-Za-z0-9_\\-]+", "");
+        // don't allow empty filenames
+        if (name.isEmpty())
+            name = "ontology";
+        return name;
     }
     
     //=================================================================================================
@@ -222,13 +312,6 @@ public class DocBuilder
                 return true;
         }
         return false;
-    }
-    
-    public void renderOntology(OntologyPresenter ontology, Writer w)
-    {
-        currentPrefix = ontology.getRes().getSubject().toString();
-        ontology.renderAll(w);
-        currentPrefix = null;
     }
     
     protected void initDefaultPrefixes()

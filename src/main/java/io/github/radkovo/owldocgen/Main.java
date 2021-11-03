@@ -5,6 +5,7 @@
  */
 package io.github.radkovo.owldocgen;
 
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -25,22 +26,26 @@ public class Main
     public static void main(String[] args)
     {
         
-        final String path = System.getProperty("user.home") + "/git/fitlayout/FitLayout.github.io/ontology/";
+        final String path = System.getProperty("user.home") + "/git/FitLayout.github.io/ontology/";
         String[] filenames = new String[] { path + "fitlayout.owl", path + "render.owl", path + "segmentation.owl" };
         
         
         try
         {
             DocBuilder builder = new DocBuilder(filenames);
+            builder.setMainTitle("FitLayout Ontologies");
             builder.addPrefix("fl", "http://fitlayout.github.io/ontology/fitlayout.owl#");
             builder.addPrefix("box", "http://fitlayout.github.io/ontology/render.owl#");
             builder.addPrefix("segm", "http://fitlayout.github.io/ontology/segmentation.owl#");
             
             System.out.println(builder.getOntologies());
 
-            Writer w = new FileWriter("/tmp/out.html");
+            /*Writer w = new FileWriter("/tmp/out.html");
             builder.renderOntology(builder.getOntologies().get(1), w);
-            w.close();
+            w.close();*/
+            File dest = new File("/tmp/gen");
+            builder.renderAll(dest);
+            builder.renderIndex(dest);
             
         } catch (RDFParseException e) {
             e.printStackTrace();

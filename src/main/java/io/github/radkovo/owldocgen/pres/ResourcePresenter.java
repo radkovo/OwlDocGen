@@ -66,6 +66,11 @@ public class ResourcePresenter extends Presenter
         return res.getLabel();
     }
     
+    public String getTitle()
+    {
+        return res.getTitle();
+    }
+    
     public String getIri()
     {
         return res.getIri();
