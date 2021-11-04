@@ -1,7 +1,7 @@
 # OwlDocGen
 (c) 2021 Radek Burget (burgetr@fit.vutbr.cz)
 
-OwlDocGen generated ontology documentation from OWL ontology definitions. Compared to similar well-known tools such as [LODE](https://github.com/essepuntato/LODE) or [pyLODE](https://github.com/RDFLib/pyLODE), it focuses on generating documentation for multiple interlinked ontologies. See the [FitLayout ontology documentation](http://fitlayout.github.io/ontology/) for an example.
+OwlDocGen generates ontology documentation from OWL ontology definitions. Compared to similar well-known tools such as [LODE](https://github.com/essepuntato/LODE) or [pyLODE](https://github.com/RDFLib/pyLODE), it focuses on generating documentation for multiple interlinked ontologies. See the [FitLayout ontology documentation](http://fitlayout.github.io/ontology/) for an example.
 
 ## Installation
 
