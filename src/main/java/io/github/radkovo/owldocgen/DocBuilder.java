@@ -15,6 +15,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -183,6 +184,15 @@ public class DocBuilder
                 }
             }
         }
+        // sort by labels
+        ret.sort(new Comparator<ResourcePresenter>()
+        {
+            @Override
+            public int compare(ResourcePresenter o1, ResourcePresenter o2)
+            {
+                return o1.getLabel().compareTo(o2.getLabel());
+            }
+        });
         return ret;
     }
     
