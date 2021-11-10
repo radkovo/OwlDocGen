@@ -23,6 +23,7 @@ import java.util.Set;
 
 import org.eclipse.rdf4j.model.IRI;
 import org.eclipse.rdf4j.model.Model;
+import org.eclipse.rdf4j.model.Namespace;
 import org.eclipse.rdf4j.model.Resource;
 import org.eclipse.rdf4j.model.vocabulary.OWL;
 import org.eclipse.rdf4j.model.vocabulary.RDF;
@@ -326,8 +327,17 @@ public class DocBuilder
     
     private void addModel(Model model)
     {
+        // add data to the repository
         try (RepositoryConnection con = repo.getConnection()) {
             con.add(model);
+        }
+        // add namespaces
+        for (Namespace ns : model.getNamespaces())
+        {
+            if (ns.getPrefix().isEmpty())
+                addPrefix(":", ns.getName());
+            else
+                addPrefix(ns.getPrefix(), ns.getName());
         }
     }
     

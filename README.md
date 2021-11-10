@@ -38,15 +38,8 @@ OwlDocGen [-hV] [-o=<path>] [-t=title] [-p=<prefix::iri>[,<prefix::iri>...]]... 
 Example usage:
 
 ```shell
-java -jar OwlDocGen.jar \
-    -p fl::http://fitlayout.github.io/ontology/fitlayout.owl# \
-    -p box::http://fitlayout.github.io/ontology/render.owl# \
-    -p segm::http://fitlayout.github.io/ontology/segmentation.owl# \
-    -o ontology/doc \
-    -t "FitLayout Ontologies" \
-    fitlayout.owl \
-    render.owl \
-    segmentation.owl
+java -jar OwlDocGen.jar -o "ontology/doc" -t "FitLayout Ontologies" \
+    fitlayout.owl render.owl segmentation.owl
 ```
 
 ## Building

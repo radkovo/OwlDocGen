@@ -25,7 +25,7 @@ public class Main implements Runnable
     @Option(names = { "-t", "--title" }, paramLabel = "title", description = "Index page title")
     private String title = "Ontologies";
     
-    @Option(names = { "-p", "--prefix" }, split = ",", paramLabel = "<prefix::iri>", description = "Prefix definitions")
+    @Option(names = { "-p", "--prefix" }, split = ",", paramLabel = "<prefix::iri>", description = "Additional prefix definition(s)")
     private String[] namespaces = {};
 
     @Option(names = { "-o", "--ouptut-folder" }, paramLabel = "<path>", description = "Ouput folder path", defaultValue = ".")
