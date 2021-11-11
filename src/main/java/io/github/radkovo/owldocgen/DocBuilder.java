@@ -58,9 +58,9 @@ public class DocBuilder
 {
     private static final Logger log = LoggerFactory.getLogger(DocBuilder.class);
 
-    public static enum Mode { HTML, MD };
+    public static enum Mode { html, md };
     
-    private Mode mode = Mode.HTML;
+    private Mode mode = Mode.html;
     private String mainTitle = "Ontologies";
     private Map<String, String> namespaces; // name -> url prefix
     private Map<String, String> prefixes; // url prefix -> name
@@ -127,9 +127,9 @@ public class DocBuilder
     {
         switch (mode)
         {
-            case HTML:
+            case html:
                 return ".html";
-            case MD:
+            case md:
                 return ".md";
         }
         return ".html";
@@ -139,9 +139,9 @@ public class DocBuilder
     {
         switch (mode)
         {
-            case HTML:
+            case html:
                 return "html";
-            case MD:
+            case md:
                 return "md";
         }
         return "html";

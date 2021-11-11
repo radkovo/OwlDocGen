@@ -10,6 +10,7 @@ import java.io.IOException;
 
 import org.eclipse.rdf4j.rio.RDFParseException;
 
+import io.github.radkovo.owldocgen.DocBuilder.Mode;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
@@ -31,6 +32,9 @@ public class Main implements Runnable
     @Option(names = { "-o", "--ouptut-folder" }, paramLabel = "<path>", description = "Ouput folder path", defaultValue = ".")
     private File dest;
     
+    @Option(names = { "-f", "--format" }, paramLabel = "<format>", description = "Output format: ${COMPLETION-CANDIDATES}")
+    private DocBuilder.Mode format = Mode.html;
+    
     @Parameters(paramLabel = "<filename>", description = "Input OWL files", arity = "1..*")
     private String[] filenames = {};
     
@@ -41,6 +45,7 @@ public class Main implements Runnable
         {
             DocBuilder builder = new DocBuilder(filenames);
             builder.setMainTitle(title);
+            builder.setMode(format);
             for (String ns : namespaces)
             {
                 String[] vals = ns.split("::");
