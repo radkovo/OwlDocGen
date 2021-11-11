@@ -10,6 +10,7 @@ import java.util.List;
 
 import org.eclipse.rdf4j.model.vocabulary.OWL;
 
+import io.github.radkovo.owldocgen.DocBuilder;
 import io.github.radkovo.owldocgen.model.ResourceObject;
 
 /**
@@ -21,9 +22,9 @@ public class ExprCollectionPresenter extends ClassExpressionPresenter
     private String operator;
     private ResourceObject spec;
 
-    public ExprCollectionPresenter(ResourceObject res, String operator, ResourceObject spec)
+    public ExprCollectionPresenter(DocBuilder builder, ResourceObject res, String operator, ResourceObject spec)
     {
-        super(res);
+        super(builder, res);
         this.operator = operator;
         this.spec = spec;
     }
@@ -53,7 +54,7 @@ public class ExprCollectionPresenter extends ClassExpressionPresenter
     @Override
     public String renderLink()
     {
-        return generateWith("exprCollection.mustache.html", this);
+        return generateWith("exprCollection", this);
     }
     
     public static class Item

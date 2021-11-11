@@ -7,6 +7,7 @@ package io.github.radkovo.owldocgen.pres;
 
 import org.eclipse.rdf4j.model.vocabulary.OWL;
 
+import io.github.radkovo.owldocgen.DocBuilder;
 import io.github.radkovo.owldocgen.model.ResourceObject;
 
 /**
@@ -20,10 +21,10 @@ public class ExprRestrictionPresenter extends ClassExpressionPresenter
     private ResourceObject obj;
     private String value;
 
-    public ExprRestrictionPresenter(ResourceObject res,
+    public ExprRestrictionPresenter(DocBuilder builder, ResourceObject res,
             ResourceObject restrictionSubject, String type, ResourceObject obj, String value)
     {
-        super(res);
+        super(builder, res);
         this.restrictionSubject = restrictionSubject;
         this.type = type;
         this.obj = obj;
@@ -66,7 +67,7 @@ public class ExprRestrictionPresenter extends ClassExpressionPresenter
     @Override
     public String renderLink()
     {
-        return generateWith("exprRestriction.mustache.html", this);
+        return generateWith("exprRestriction", this);
     }
     
 }

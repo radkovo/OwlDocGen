@@ -8,6 +8,7 @@ package io.github.radkovo.owldocgen.pres;
 import java.io.Writer;
 import java.util.List;
 
+import io.github.radkovo.owldocgen.DocBuilder;
 import io.github.radkovo.owldocgen.model.ResourceObject;
 
 /**
@@ -20,9 +21,9 @@ public class OntologyPresenter extends ResourcePresenter
     private List<ResourcePresenter> objectProperties;
     private List<ResourcePresenter> datatypeProperties;
 
-    public OntologyPresenter(ResourceObject res)
+    public OntologyPresenter(DocBuilder builder, ResourceObject res)
     {
-        super(res);
+        super(builder, res);
     }
     
     public boolean hasClasses()
@@ -87,7 +88,7 @@ public class OntologyPresenter extends ResourcePresenter
 
     public void renderAll(Writer w)
     {
-        generateWith("ontology.mustache.html", this, w);
+        generateWith("ontology", this, w);
     }
 
 }

@@ -23,9 +23,9 @@ public class ResourcePresenter extends Presenter
 {
     private ResourceObject res;
 
-    public ResourcePresenter(ResourceObject res)
+    public ResourcePresenter(DocBuilder builder, ResourceObject res)
     {
-        super();
+        super(builder);
         this.res = res;
     }
 
@@ -42,11 +42,11 @@ public class ResourcePresenter extends Presenter
     public String renderLink()
     {
         if (getRes().isLocal())
-            return generateWith("resourceLinkLocal.mustache.html", this);
+            return generateWith("resourceLinkLocal", this);
         else if (getRes().isKnown())
-            return generateWith("resourceLinkKnown.mustache.html", this);
+            return generateWith("resourceLinkKnown", this);
         else
-            return generateWith("resourceLinkOther.mustache.html", this);
+            return generateWith("resourceLinkOther", this);
     }
     
     public String renderDetail()

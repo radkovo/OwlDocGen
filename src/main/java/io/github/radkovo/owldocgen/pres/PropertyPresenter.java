@@ -7,6 +7,7 @@ package io.github.radkovo.owldocgen.pres;
 
 import org.eclipse.rdf4j.model.vocabulary.OWL;
 
+import io.github.radkovo.owldocgen.DocBuilder;
 import io.github.radkovo.owldocgen.model.ResourceObject;
 
 /**
@@ -16,15 +17,15 @@ import io.github.radkovo.owldocgen.model.ResourceObject;
 public class PropertyPresenter extends ResourcePresenter
 {
 
-    public PropertyPresenter(ResourceObject res)
+    public PropertyPresenter(DocBuilder builder, ResourceObject res)
     {
-        super(res);
+        super(builder, res);
     }
     
     @Override
     public String renderDetail()
     {
-        return generateWith("property.mustache.html", this);
+        return generateWith("property", this);
     }
 
     public String getHasDomain()

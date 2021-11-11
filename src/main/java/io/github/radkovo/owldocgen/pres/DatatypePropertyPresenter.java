@@ -5,6 +5,7 @@
  */
 package io.github.radkovo.owldocgen.pres;
 
+import io.github.radkovo.owldocgen.DocBuilder;
 import io.github.radkovo.owldocgen.model.ResourceObject;
 
 /**
@@ -14,9 +15,9 @@ import io.github.radkovo.owldocgen.model.ResourceObject;
 public class DatatypePropertyPresenter extends PropertyPresenter
 {
 
-    public DatatypePropertyPresenter(ResourceObject res)
+    public DatatypePropertyPresenter(DocBuilder builder, ResourceObject res)
     {
-        super(res);
+        super(builder, res);
     }
 
 }

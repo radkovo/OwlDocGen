@@ -7,6 +7,7 @@ package io.github.radkovo.owldocgen.pres;
 
 import org.eclipse.rdf4j.model.vocabulary.OWL;
 
+import io.github.radkovo.owldocgen.DocBuilder;
 import io.github.radkovo.owldocgen.model.ResourceObject;
 
 /**
@@ -18,9 +19,9 @@ public class ExprUnaryPresenter extends ClassExpressionPresenter
     private String op;
     private ResourceObject obj;
 
-    public ExprUnaryPresenter(ResourceObject res, String operator, ResourceObject obj)
+    public ExprUnaryPresenter(DocBuilder builder, ResourceObject res, String operator, ResourceObject obj)
     {
-        super(res);
+        super(builder, res);
         this.op = operator;
         this.obj = obj;
     }
@@ -43,7 +44,7 @@ public class ExprUnaryPresenter extends ClassExpressionPresenter
     @Override
     public String renderLink()
     {
-        return generateWith("exprUnary.mustache.html", this);
+        return generateWith("exprUnary", this);
     }
 
 }

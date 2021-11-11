@@ -17,12 +17,11 @@ import io.github.radkovo.owldocgen.DocBuilder;
  */
 public class RootPresenter extends Presenter
 {
-    private DocBuilder builder;
     private List<OntologyPresenter> ontologies;
 
     public RootPresenter(DocBuilder builder, List<OntologyPresenter> ontologies)
     {
-        this.builder = builder;
+        super(builder);
         this.ontologies = ontologies;
     }
 
@@ -33,7 +32,7 @@ public class RootPresenter extends Presenter
     
     public String getTitle()
     {
-        return builder.getMainTitle();
+        return getBuilder().getMainTitle();
     }
     
     public List<OntologyInfo> getOntologyInfo()
@@ -43,7 +42,7 @@ public class RootPresenter extends Presenter
         {
             OntologyInfo info = new OntologyInfo();
             info.o = op;
-            info.filename = builder.getOntologyFileName(op);
+            info.filename = getBuilder().getOntologyFileName(op);
             ret.add(info);
         }
         return ret;
@@ -51,7 +50,7 @@ public class RootPresenter extends Presenter
     
     public void renderAll(Writer w)
     {
-        generateWith("index.mustache.html", this, w);
+        generateWith("index", this, w);
     }
     
     public static class OntologyInfo

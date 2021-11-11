@@ -58,8 +58,9 @@ public class DocBuilder
 {
     private static final Logger log = LoggerFactory.getLogger(DocBuilder.class);
 
-    public final String filenameSuffix = ".html";
+    public static enum Mode { HTML, MD };
     
+    private Mode mode = Mode.HTML;
     private String mainTitle = "Ontologies";
     private Map<String, String> namespaces; // name -> url prefix
     private Map<String, String> prefixes; // url prefix -> name
@@ -112,6 +113,40 @@ public class DocBuilder
         prefixes.put(prefix, name);
     }
     
+    public Mode getMode()
+    {
+        return mode;
+    }
+
+    public void setMode(Mode mode)
+    {
+        this.mode = mode;
+    }
+
+    public String getFilenameSuffix()
+    {
+        switch (mode)
+        {
+            case HTML:
+                return ".html";
+            case MD:
+                return ".md";
+        }
+        return ".html";
+    }
+
+    public String getFormatName()
+    {
+        switch (mode)
+        {
+            case HTML:
+                return "html";
+            case MD:
+                return "md";
+        }
+        return "html";
+    }
+
     public List<OntologyPresenter> getOntologies()
     {
         if (ontologies == null)
@@ -129,7 +164,7 @@ public class DocBuilder
     public void renderIndex(File destDir) throws IOException
     {
         RootPresenter root = new RootPresenter(this, getOntologies());
-        File dest = new File(destDir, "index" + filenameSuffix);
+        File dest = new File(destDir, "index" + getFilenameSuffix());
         try (Writer w = new FileWriter(dest)) {
             root.renderAll(w);
         }
@@ -160,7 +195,7 @@ public class DocBuilder
             {
                 Ontology o = new Ontology(this, res);
                 assignFilename(o);
-                OntologyPresenter op = new OntologyPresenter(o);
+                OntologyPresenter op = new OntologyPresenter(this, o);
                 op.setClasses(findResourcesForOntology(o, OWL.CLASS));
                 op.setDatatypeProperties(findResourcesForOntology(o, OWL.DATATYPEPROPERTY));
                 op.setObjectProperties(findResourcesForOntology(o, OWL.OBJECTPROPERTY));
@@ -206,11 +241,11 @@ public class DocBuilder
                 System.out.println(res.getModel());*/
             ResourceObject obj;
             if ((obj = res.getObjectProperty(OWL.UNIONOF)) != null)
-                return new ExprCollectionPresenter(res, "or", obj);
+                return new ExprCollectionPresenter(this, res, "or", obj);
             else if ((obj = res.getObjectProperty(OWL.INTERSECTIONOF)) != null)
-                return new ExprCollectionPresenter(res, "and", obj);
+                return new ExprCollectionPresenter(this, res, "and", obj);
             else if ((obj = res.getObjectProperty(OWL.COMPLEMENTOF)) != null)
-                return new ExprUnaryPresenter(res, "not", obj);
+                return new ExprUnaryPresenter(this, res, "not", obj);
             else if (OWL.RESTRICTION.equals(res.getType()))
             {
                 // restriction subject
@@ -220,32 +255,32 @@ public class DocBuilder
                 ResourceObject robj;
                 String value;
                 if ((robj = res.getObjectProperty(OWL.SOMEVALUESFROM)) != null)
-                    return new ExprRestrictionPresenter(res, restrictionSubj, "some", robj, null);
+                    return new ExprRestrictionPresenter(this, res, restrictionSubj, "some", robj, null);
                 else if ((robj = res.getObjectProperty(OWL.ALLVALUESFROM)) != null)
-                    return new ExprRestrictionPresenter(res, restrictionSubj, "only", robj, null);
+                    return new ExprRestrictionPresenter(this, res, restrictionSubj, "only", robj, null);
                 else if ((value = res.getStringProperty(OWL.CARDINALITY)) != null)
-                    return new ExprRestrictionPresenter(res, restrictionSubj, "exactly", null, value);
+                    return new ExprRestrictionPresenter(this, res, restrictionSubj, "exactly", null, value);
                 else if ((value = res.getStringProperty(OWL.MINCARDINALITY)) != null)
-                    return new ExprRestrictionPresenter(res, restrictionSubj, "min", null, value);
+                    return new ExprRestrictionPresenter(this, res, restrictionSubj, "min", null, value);
                 else if ((value = res.getStringProperty(OWL.MAXCARDINALITY)) != null)
-                    return new ExprRestrictionPresenter(res, restrictionSubj, "max", null, value);
+                    return new ExprRestrictionPresenter(this, res, restrictionSubj, "max", null, value);
                 else
-                    return new ClassPresenter(res);
+                    return new ClassPresenter(this, res);
             }
             else
-                return new ClassPresenter(res);
+                return new ClassPresenter(this, res);
         }
         else if (OWL.DATATYPEPROPERTY.equals(typeIRI))
         {
-            return new DatatypePropertyPresenter(res);
+            return new DatatypePropertyPresenter(this, res);
         }
         else if (OWL.OBJECTPROPERTY.equals(typeIRI))
         {
-            return new ObjectPropertyPresenter(res);
+            return new ObjectPropertyPresenter(this, res);
         }
         else
         {
-            return new ResourcePresenter(res);
+            return new ResourcePresenter(this, res);
         }
     }
     
@@ -272,7 +307,7 @@ public class DocBuilder
         while (files.containsValue(cand))
             cand = cand + (i++);
         // add suffix
-        cand += filenameSuffix;
+        cand += getFilenameSuffix();
         // store
         files.put(o.getPrefix(), cand);
         return cand;
