@@ -1,0 +1,1 @@
+{{#list}}{{{renderLink}}} {{/list}}

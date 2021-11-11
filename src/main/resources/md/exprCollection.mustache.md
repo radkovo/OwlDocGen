@@ -1,0 +1,1 @@
+({{#items}}{{#operator}} **{{.}}** {{/operator}}{{{obj.renderLink}}}{{/items}})
