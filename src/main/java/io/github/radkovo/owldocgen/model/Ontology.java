@@ -21,7 +21,7 @@ public class Ontology extends ResourceObject
         super(builder, subject);
     }
     
-    public String getPrefix()
+    public String getOntologyIRI()
     {
         return getSubject().toString();
     }

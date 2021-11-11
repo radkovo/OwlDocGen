@@ -215,7 +215,7 @@ public class DocBuilder
                 if (res instanceof IRI)
                 {
                     final IRI iri = (IRI) res;
-                    if (o.getPrefix().equals(iri.getNamespace()))
+                    if (o.getOntologyIRI().equals(iri.getNamespace()))
                         ret.add(createPresenter(new ResourceObject(this, res), typeIRI));
                 }
             }
@@ -286,7 +286,7 @@ public class DocBuilder
     
     public String getOntologyFileName(OntologyPresenter op)
     {
-        final String prefix = ((Ontology) op.getRes()).getPrefix();
+        final String prefix = ((Ontology) op.getRes()).getOntologyIRI();
         return files.get(prefix);
     }
     
@@ -309,14 +309,14 @@ public class DocBuilder
         // add suffix
         cand += getFilenameSuffix();
         // store
-        files.put(o.getPrefix(), cand);
+        files.put(o.getOntologyIRI(), cand);
         return cand;
     }
     
     private String guessFilename(Ontology o)
     {
         // start with the prefix uri
-        String name = o.getPrefix();
+        String name = o.getOntologyIRI();
         // find the last path component
         int i = name.lastIndexOf('/');
         if (i != -1 && i + 1 < name.length())
