@@ -6,6 +6,7 @@
 package io.github.radkovo.owldocgen.model;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -155,7 +156,9 @@ public class ResourceObject
         Set<ResourceObject> all = new HashSet<>();
         all.addAll(getRelatedSubjects(OWL.EQUIVALENTCLASS));
         all.addAll(getRelatedObjects(OWL.EQUIVALENTCLASS));
-        return new ArrayList<>(all);
+        List<ResourceObject> ret = new ArrayList<>(all);
+        sortObjects(ret);
+        return ret;
     }
     
     public List<ResourceObject> getIsInDomain()
@@ -244,6 +247,7 @@ public class ResourceObject
                 result.close();
             }
         }
+        sortObjects(ret);
         return ret;
     }
     
@@ -263,7 +267,20 @@ public class ResourceObject
                 result.close();
             }
         }
+        sortObjects(ret);
         return ret;
+    }
+    
+    private void sortObjects(List<ResourceObject> list)
+    {
+        list.sort(new Comparator<ResourceObject>()
+        {
+            @Override
+            public int compare(ResourceObject o1, ResourceObject o2)
+            {
+                return o1.getLabel().compareTo(o2.getLabel());
+            }
+        });
     }
     
     public String getStringProperty(IRI predicate)
