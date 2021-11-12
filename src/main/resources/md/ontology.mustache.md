@@ -2,7 +2,7 @@
 # {{title}}
 
 IRI
-: `{{prefix}}`
+: `{{ontologyIRI}}`
 
 {{#version}}
 Version
