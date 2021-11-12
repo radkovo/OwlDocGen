@@ -31,6 +31,7 @@ import org.eclipse.rdf4j.sail.memory.MemoryStore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import io.github.radkovo.owldocgen.model.NamespaceDef;
 import io.github.radkovo.owldocgen.model.Ontology;
 import io.github.radkovo.owldocgen.model.ResourceObject;
 import io.github.radkovo.owldocgen.pres.ClassPresenter;
@@ -56,6 +57,7 @@ public class DocBuilder
     private Mode mode = Mode.html;
     private String mainTitle = "Ontologies";
     private List<InputFile> inputFiles;
+    private Map<String, String> namespaces; // namespaces mentioned in files name -> prefix
     private Map<String, String> prefixes; // url prefix -> name
     private Map<String, String> outputFiles; // output filenames (ontology iri -> filename)
     private Repository repo;
@@ -69,6 +71,7 @@ public class DocBuilder
     {
         inputFiles = new ArrayList<>();
         outputFiles = new HashMap<>();
+        namespaces = new HashMap<>();
         prefixes = new HashMap<>();
         initDefaultPrefixes();
         repo = new SailRepository(new MemoryStore());
@@ -204,6 +207,7 @@ public class DocBuilder
                 op.setDatatypeProperties(findResourcesForOntology(o, OWL.DATATYPEPROPERTY));
                 op.setObjectProperties(findResourcesForOntology(o, OWL.OBJECTPROPERTY));
                 op.setAnnotationProperties(findResourcesForOntology(o, OWL.ANNOTATIONPROPERTY));
+                op.setNamespaces(getNamespaces());
                 ret.add(op);
             }
         }
@@ -232,6 +236,22 @@ public class DocBuilder
             public int compare(ResourcePresenter o1, ResourcePresenter o2)
             {
                 return o1.getLabel().compareTo(o2.getLabel());
+            }
+        });
+        return ret;
+    }
+    
+    public List<NamespaceDef> getNamespaces()
+    {
+        List<NamespaceDef> ret = new ArrayList<>();
+        for (String name : namespaces.keySet())
+            ret.add(new NamespaceDef(name, namespaces.get(name)));
+        ret.sort(new Comparator<NamespaceDef>()
+        {
+            @Override
+            public int compare(NamespaceDef o1, NamespaceDef o2)
+            {
+                return o1.getName().compareTo(o2.getName());
             }
         });
         return ret;
@@ -396,7 +416,10 @@ public class DocBuilder
         for (Namespace ns : model.getNamespaces())
         {
             if (!ns.getPrefix().isEmpty())
+            {
                 addPrefix(ns.getPrefix(), ns.getName());
+                namespaces.put(ns.getPrefix(), ns.getName());
+            }
         }
     }
     

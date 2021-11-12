@@ -9,6 +9,7 @@ import java.io.Writer;
 import java.util.List;
 
 import io.github.radkovo.owldocgen.DocBuilder;
+import io.github.radkovo.owldocgen.model.NamespaceDef;
 import io.github.radkovo.owldocgen.model.ResourceObject;
 
 /**
@@ -21,6 +22,7 @@ public class OntologyPresenter extends ResourcePresenter
     private List<ResourcePresenter> objectProperties;
     private List<ResourcePresenter> datatypeProperties;
     private List<ResourcePresenter> annotationProperties;
+    private List<NamespaceDef> namespaces;
     
 
     public OntologyPresenter(DocBuilder builder, ResourceObject res)
@@ -106,6 +108,21 @@ public class OntologyPresenter extends ResourcePresenter
     public String getAnnotationPropertyLinks()
     {
         return renderList("subtoc", annotationProperties, false);
+    }
+
+    public boolean hasNamespaces()
+    {
+        return namespaces != null && !namespaces.isEmpty();
+    }
+
+    public List<NamespaceDef> getNamespaces()
+    {
+        return namespaces;
+    }
+
+    public void setNamespaces(List<NamespaceDef> namespaces)
+    {
+        this.namespaces = namespaces;
     }
 
     public void renderAll(Writer w)
