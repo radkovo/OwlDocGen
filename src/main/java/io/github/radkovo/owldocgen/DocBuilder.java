@@ -6,14 +6,9 @@
 package io.github.radkovo.owldocgen;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.Writer;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -31,9 +26,7 @@ import org.eclipse.rdf4j.query.QueryResults;
 import org.eclipse.rdf4j.repository.Repository;
 import org.eclipse.rdf4j.repository.RepositoryConnection;
 import org.eclipse.rdf4j.repository.sail.SailRepository;
-import org.eclipse.rdf4j.rio.RDFFormat;
 import org.eclipse.rdf4j.rio.RDFParseException;
-import org.eclipse.rdf4j.rio.Rio;
 import org.eclipse.rdf4j.sail.memory.MemoryStore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -62,19 +55,20 @@ public class DocBuilder
     
     private Mode mode = Mode.html;
     private String mainTitle = "Ontologies";
-    private Map<String, String> namespaces; // name -> url prefix
+    private List<InputFile> inputFiles;
     private Map<String, String> prefixes; // url prefix -> name
-    private Map<String, String> files; // namespace url -> filename
+    private Map<String, String> outputFiles; // output filenames (ontology iri -> filename)
     private Repository repo;
     private List<OntologyPresenter> ontologies;
     
-    private String currentPrefix; //the prefix of the ontology currently being rendered
+    private OntologyPresenter currentOntology; //the ontology currently being rendered
+    private String currentLocalNs; //default namespace for the current ontology
     
 
     public DocBuilder(String[] filenames) throws IOException, RDFParseException
     {
-        files = new HashMap<>();
-        namespaces = new HashMap<>();
+        inputFiles = new ArrayList<>();
+        outputFiles = new HashMap<>();
         prefixes = new HashMap<>();
         initDefaultPrefixes();
         repo = new SailRepository(new MemoryStore());
@@ -97,11 +91,6 @@ public class DocBuilder
         return repo;
     }
     
-    public Map<String, String> getNamespaces()
-    {
-        return namespaces;
-    }
-
     public Map<String, String> getPrefixes()
     {
         return prefixes;
@@ -109,7 +98,6 @@ public class DocBuilder
 
     public void addPrefix(String name, String prefix)
     {
-        namespaces.put(name, prefix);
         prefixes.put(prefix, name);
     }
     
@@ -154,11 +142,27 @@ public class DocBuilder
         return ontologies;
     }
 
+    public OntologyPresenter getCurrentOntology()
+    {
+        return currentOntology;
+    }
+
+    public String getCurrentLocalNs()
+    {
+        return currentLocalNs;
+    }
+
     public void renderOntology(OntologyPresenter ontology, Writer w)
     {
-        currentPrefix = ontology.getRes().getSubject().toString();
+        // setup the local namespace prefix in order to recognize the local uris in ontologies
+        currentOntology = ontology;
+        InputFile ifile = findOntologyInputFile(ontology);
+        if (ifile != null)
+            currentLocalNs = ifile.getDefaultPrefix();
+        else
+            currentLocalNs = "";
+        // render the ontology
         ontology.renderAll(w);
-        currentPrefix = null;
     }
     
     public void renderIndex(File destDir) throws IOException
@@ -215,7 +219,7 @@ public class DocBuilder
                 if (res instanceof IRI)
                 {
                     final IRI iri = (IRI) res;
-                    if (o.getOntologyIRI().equals(iri.getNamespace()))
+                    if (belongsToOntology(iri, o))
                         ret.add(createPresenter(new ResourceObject(this, res), typeIRI));
                 }
             }
@@ -230,6 +234,15 @@ public class DocBuilder
             }
         });
         return ret;
+    }
+    
+    private boolean belongsToOntology(IRI iri, Ontology o)
+    {
+        final InputFile ifile = findOntologyInputFile(o.getSubject());
+        if (ifile != null)
+            return iri.getNamespace().equals(ifile.getDefaultPrefix());
+        else
+            return false;
     }
     
     public ResourcePresenter createPresenter(ResourceObject res, IRI typeIRI)
@@ -287,13 +300,13 @@ public class DocBuilder
     public String getOntologyFileName(OntologyPresenter op)
     {
         final String prefix = ((Ontology) op.getRes()).getOntologyIRI();
-        return files.get(prefix);
+        return outputFiles.get(prefix);
     }
     
     public String getResourceFileName(Resource resource)
     {
         if (resource instanceof IRI)
-            return files.get(((IRI) resource).getNamespace());
+            return outputFiles.get(((IRI) resource).getNamespace());
         else
             return null;
     }
@@ -304,12 +317,12 @@ public class DocBuilder
         // solve duplicates
         int i = 1;
         String cand = name;
-        while (files.containsValue(cand))
+        while (outputFiles.containsValue(cand))
             cand = cand + (i++);
         // add suffix
         cand += getFilenameSuffix();
         // store
-        files.put(o.getOntologyIRI(), cand);
+        outputFiles.put(o.getOntologyIRI(), cand);
         return cand;
     }
     
@@ -333,6 +346,21 @@ public class DocBuilder
         return name;
     }
     
+    public InputFile findOntologyInputFile(Resource ontologyIri)
+    {
+        for (InputFile file : inputFiles)
+        {
+            if (file.getOntologyIRIs().contains(ontologyIri))
+                return file;
+        }
+        return null;
+    }
+    
+    public InputFile findOntologyInputFile(OntologyPresenter op)
+    {
+        return findOntologyInputFile(op.getRes().getSubject());
+    }
+    
     //=================================================================================================
     
     public String getShortIri(IRI iri)
@@ -346,18 +374,9 @@ public class DocBuilder
     
     private void loadFile(String filename) throws IOException, RDFParseException
     {
-        Path file = Paths.get(filename);
-        if (!Files.exists(file)) throw new FileNotFoundException(filename);
-
-        RDFFormat format = Rio.getParserFormatForFileName(filename).orElse(null);
-        log.trace("detected input format from filename {}: {}", filename, format);
-
-        try (final InputStream inputStream = Files.newInputStream(file))
-        {
-            log.trace("Loading {}", filename);
-            Model model = Rio.parse(inputStream, "", format);
-            addModel(model);
-        }
+        InputFile ifile = new InputFile(filename);
+        inputFiles.add(ifile);
+        addModel(ifile.getModel());
     }
     
     private void addModel(Model model)
@@ -369,9 +388,7 @@ public class DocBuilder
         // add namespaces
         for (Namespace ns : model.getNamespaces())
         {
-            if (ns.getPrefix().isEmpty())
-                addPrefix(":", ns.getName());
-            else
+            if (!ns.getPrefix().isEmpty())
                 addPrefix(ns.getPrefix(), ns.getName());
         }
     }
@@ -385,7 +402,7 @@ public class DocBuilder
      */
     public boolean isLocalIRI(IRI iri)
     {
-        return currentPrefix != null && currentPrefix.equals(iri.getNamespace());
+        return currentLocalNs != null && currentLocalNs.equals(iri.getNamespace());
     }
     
     /**
