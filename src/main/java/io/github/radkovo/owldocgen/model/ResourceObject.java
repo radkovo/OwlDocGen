@@ -93,10 +93,7 @@ public class ResourceObject
     
     public String getShortIri()
     {
-        if (subject instanceof IRI)
-            return builder.getShortIri((IRI) subject);
-        else
-            return getIri();
+        return builder.getShortIri(subject);
     }
     
     public String getLabel()

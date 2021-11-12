@@ -363,11 +363,17 @@ public class DocBuilder
     
     //=================================================================================================
     
-    public String getShortIri(IRI iri)
+    public String getShortIri(Resource res)
     {
-        String name = iri.getLocalName();
-        String namespace = prefixes.get(iri.getNamespace());
-        return (namespace != null && name != null) ? (namespace + ":" + name) : iri.toString();
+        if (res instanceof IRI)
+        {
+            final IRI iri = (IRI) res;
+            String name = iri.getLocalName();
+            String namespace = prefixes.get(iri.getNamespace());
+            return (namespace != null && name != null) ? (namespace + ":" + name) : res.toString();
+        }
+        else
+            return res.toString();
     }
     
     //=================================================================================================
