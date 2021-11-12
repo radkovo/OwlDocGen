@@ -20,6 +20,8 @@ public class OntologyPresenter extends ResourcePresenter
     private List<ResourcePresenter> classes;
     private List<ResourcePresenter> objectProperties;
     private List<ResourcePresenter> datatypeProperties;
+    private List<ResourcePresenter> annotationProperties;
+    
 
     public OntologyPresenter(DocBuilder builder, ResourceObject res)
     {
@@ -84,6 +86,26 @@ public class OntologyPresenter extends ResourcePresenter
     public String getDatatypePropertyLinks()
     {
         return renderList("subtoc", datatypeProperties, false);
+    }
+
+    public boolean hasAnnotationProperties()
+    {
+        return annotationProperties != null && !annotationProperties.isEmpty();
+    }
+
+    public List<ResourcePresenter> getAnnotationProperties()
+    {
+        return annotationProperties;
+    }
+
+    public void setAnnotationProperties(List<ResourcePresenter> annotationProperties)
+    {
+        this.annotationProperties = annotationProperties;
+    }
+
+    public String getAnnotationPropertyLinks()
+    {
+        return renderList("subtoc", annotationProperties, false);
     }
 
     public void renderAll(Writer w)

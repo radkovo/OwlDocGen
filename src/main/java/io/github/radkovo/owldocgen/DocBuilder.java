@@ -203,6 +203,7 @@ public class DocBuilder
                 op.setClasses(findResourcesForOntology(o, OWL.CLASS));
                 op.setDatatypeProperties(findResourcesForOntology(o, OWL.DATATYPEPROPERTY));
                 op.setObjectProperties(findResourcesForOntology(o, OWL.OBJECTPROPERTY));
+                op.setAnnotationProperties(findResourcesForOntology(o, OWL.ANNOTATIONPROPERTY));
                 ret.add(op);
             }
         }
