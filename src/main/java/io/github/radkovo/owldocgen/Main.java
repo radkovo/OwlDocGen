@@ -20,7 +20,7 @@ import picocli.CommandLine.Parameters;
  * 
  * @author burgetr
  */
-@Command(name = "OwlDocGen", version = "OwlDocGen 0.1", mixinStandardHelpOptions = true)
+@Command(name = "OwlDocGen", version = "OwlDocGen 0.2", mixinStandardHelpOptions = true)
 public class Main implements Runnable
 {
     @Option(names = { "-t", "--title" }, paramLabel = "title", description = "Index page title")
