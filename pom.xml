@@ -4,7 +4,7 @@
 
     <groupId>io.github.radkovo</groupId>
     <artifactId>owldocgen</artifactId>
-    <version>0.2</version>
+    <version>0.3-SNAPSHOT</version>
 
     <name>OWL Documentation Generator</name>
     <description>Yet another ontology documentation generator</description>
@@ -30,7 +30,7 @@
         <url>https://github.com/radkovo/OwlDocGen.git</url>
         <connection>scm:git:git@github.com:radkovo/OwlDocGen.git</connection>
         <developerConnection>scm:git:git@github.com:radkovo/OwlDocGen.git</developerConnection>
-        <tag>owldocgen-0.2</tag>
+        <tag>HEAD</tag>
     </scm>
 
     <properties>
