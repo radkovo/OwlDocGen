@@ -23,15 +23,16 @@ RDF4J Class Builder takes an OWL definition file in any format (RDF/XML, Turtle,
 The following command line parameters may be used:
 
 ```
-OwlDocGen [-hV] [-o=<path>] [-t=title] [-p=<prefix::iri>[,<prefix::iri>...]]... <filename>...
-      <filename>...   Input OWL files
-  -h, --help          Show this help message and exit.
+OwlDocGen [-hV] [-f=<format>] [-o=<path>] [-t=title] [-p=<prefix::iri>[,<prefix::iri>...]]... <filename>...
+      <filename>...       Input OWL files
+  -f, --format=<format>   Output format: html, md
+  -h, --help              Show this help message and exit.
   -o, --ouptut-folder=<path>
-                      Ouput folder path
+                          Ouput folder path
   -p, --prefix=<prefix::iri>[,<prefix::iri>...]
-                      Prefix definitions
-  -t, --title=title   Index page title
-  -V, --version       Print version information and exit.
+                          Additional prefix definition(s)
+  -t, --title=title       Index page title
+  -V, --version           Print version information and exit.
 
 ```
 
